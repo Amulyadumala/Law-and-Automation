@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criminal List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #120c12;
+      background-image: url(https://go.tiffin.edu/wp-content/uploads/2022/05/bcj-criminal-behavior-scaled.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background: hsl(253, 57%, 37%);
+      background-image: url(https://cdn.pixabay.com/photo/2023/12/12/09/18/criminal-8444883_1280.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(169, 126, 126, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: hsl(158, 48%, 70%);
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    form label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    form input, form textarea, form button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #680b0b;
+      border-radius: 5px;
+    }
+    form button {
+      background-color: #5cb85c;
+      color: rgb(36, 12, 12);
+      border: none;
+      cursor: pointer;
+    }
+    form button:hover {
+      background-color: #4cae4c;
+    }
+    .criminal-list {
+      margin-top: 20px;
+      color:hsl(351, 83%, 84%)
+    }
+    .criminal {
+      background: hsl(0, 26%, 42%);
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .criminal h3 {
+      margin: 0 0 5px;
+      color: #a89e9e;
+    }
+    .criminal p {
+      margin: 5px 0;
+      color: #eef1f4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Criminal List</h1>
+    <form id="criminalForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" placeholder="Enter criminal name" required>
+      
+      <label for="crime">Crime:</label>
+      <textarea id="crime" placeholder="Describe the crime" rows="3" required></textarea>
+      
+      <label for="date">Date of Crime:</label>
+      <input type="date" id="date" required>
+      
+      <button type="submit">Add to List</button>
+    </form>
+    
+    <div class="criminal-list" id="criminalList">
+      <h2>Criminal Records:</h2>
+      <!-- Criminal entries will appear here -->
+    </div>
+  </div>
+
+  <script>
+    const criminalForm = document.getElementById('criminalForm');
+    const criminalList = document.getElementById('criminalList');
+
+    criminalForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      // Get input values
+      const name = document.getElementById('name').value.trim();
+      const crime = document.getElementById('crime').value.trim();
+      const date = document.getElementById('date').value;
+
+      // Validate inputs
+      if (name === '' || crime === '' || date === '') {
+        alert('Please fill out all fields!');
+        return;
+      }
+
+      // Create a new criminal entry
+      const criminalDiv = document.createElement('div');
+      criminalDiv.classList.add('criminal');
+      criminalDiv.innerHTML = `
+        <h3>${name}</h3>
+        <p><strong>Crime:</strong> ${crime}</p>
+        <p><strong>Date:</strong> ${date}</p>
+      `;
+
+      // Append to the criminal list
+      criminalList.appendChild(criminalDiv);
+
+      // Clear the form
+      criminalForm.reset();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charge Sheet Filing</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #7b889d;
+      background-image: url(https://cdn11.bigcommerce.com/s-u81rarrvlz/product_images/uploaded_images/guide-to-traffic-control-plan-and-traffic-management-plan-blog.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+    }
+
+    header {
+      background-color: #005e55;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 26px;
+      letter-spacing: 2px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      margin: 40px auto;
+      background-color: rgb(233, 221, 221);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #333;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"], input[type="date"], input[type="time"], textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      color: #333;
+      margin-top: 8px;
+      box-sizing: border-box;
+    }
+
+    input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+
+    textarea {
+      height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .response-message {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 10px 0;
+      background-color: #005e55;
+      color: white;
+      margin-top: 30px;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .img-preview {
+      margin-top: 10px;
+    }
+
+    .img-preview img {
+      max-width: 100%;
+      max-height: 200px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      header {
+        font-size: 22px;
+      }
+
+      button {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    Traffic Inspector Charge Sheet Filing
+  </header>
+
+  <div class="container">
+    <form id="chargeSheetForm">
+      <div class="form-group">
+        <label for="vehicleNumber">Vehicle Number</label>
+        <input type="text" id="vehicleNumber" name="vehicleNumber" required placeholder="Enter Vehicle Number">
+      </div>
+
+      <div class="form-group">
+        <label for="ownerName">Owner's Name</label>
+        <input type="text" id="ownerName" name="ownerName" required placeholder="Enter Owner's Name">
+      </div>
+
+      <div class="form-group">
+        <label for="violation">Offense Violation</label>
+        <select id="violation" name="violation" required>
+          <option value="Speeding">Speeding</option>
+          <option value="No Helmet">No Helmet</option>
+          <option value="Red Light Violation">Red Light Violation</option>
+          <option value="Illegal Parking">Illegal Parking</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location of Offense</label>
+        <input type="text" id="location" name="location" required placeholder="Enter Location">
+      </div>
+
+      <div class="form-group">
+        <label for="date">Date of Offense</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+
+      <div class="form-group">
+        <label for="time">Time of Offense</label>
+        <input type="time" id="time" name="time" required>
+      </div>
+
+      <div class="form-group">
+        <label for="inspectorName">Inspector's Name</label>
+        <input type="text" id="inspectorName" name="inspectorName" required placeholder="Enter Inspector's Name">
+      </div>
+
+      <div class="form-group">
+        <label for="badgeNumber">Inspector's Badge Number</label>
+        <input type="text" id="badgeNumber" name="badgeNumber" required placeholder="Enter Badge Number">
+      </div>
+
+      <div class="form-group">
+        <label for="comments">Additional Comments</label>
+        <textarea id="comments" name="comments" placeholder="Enter additional comments (if any)"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="imageUpload">Upload Image of Offense/Vehicle</label>
+        <input type="file" id="imageUpload" name="imageUpload" accept="image/*">
+        <div class="img-preview" id="imgPreview"></div>
+      </div>
+
+      <button type="submit">Submit Charge Sheet</button>
+
+      <div class="loading" id="loading">Submitting...</div>
+    </form>
+
+    <div id="responseMessage" class="response-message"></div>
+  </div>
+
+  <div class="footer">
+    Traffic Management System
+  </div>
+
+  <script>
+    // Handle form submission
+    document.getElementById('chargeSheetForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      // Show loading text
+      document.getElementById('loading').style.display = 'block';
+
+      // Retrieve form values
+      const vehicleNumber = document.getElementById('vehicleNumber').value;
+      const ownerName = document.getElementById('ownerName').value;
+      const violation = document.getElementById('violation').value;
+      const location = document.getElementById('location').value;
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      const inspectorName = document.getElementById('inspectorName').value;
+      const badgeNumber = document.getElementById('badgeNumber').value;
+      const comments = document.getElementById('comments').value;
+
+      // Simulate submitting the form (could be an API call or database save in real-world application)
+      setTimeout(() => {
+        document.getElementById('responseMessage').innerHTML = `
+          <strong>Charge Sheet Submitted Successfully!</strong><br>
+          <strong>Vehicle Number:</strong> ${vehicleNumber}<br>
+          <strong>Owner Name:</strong> ${ownerName}<br>
+          <strong>Offense:</strong> ${violation}<br>
+          <strong>Location:</strong> ${location}<br>
+          <strong>Date:</strong> ${date}<br>
+          <strong>Time:</strong> ${time}<br>
+          <strong>Inspector:</strong> ${inspectorName} (Badge No: ${badgeNumber})<br>
+          <strong>Comments:</strong> ${comments || 'N/A'}
+        `;
+        document.getElementById('chargeSheetForm').reset();
+        document.getElementById('loading').style.display = 'none';
+      }, 2000);
+    });
+
+    // Image preview functionality
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('imgPreview').innerHTML = `<img src="${e.target.result}" alt="Image Preview">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Get geo-location (Optional)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        document.getElementById('location').value = `Lat: ${position.coords.latitude}, Long: ${position.coords.longitude}`;
+      });
+    }
+  </script>
+
+</body>
+</html>

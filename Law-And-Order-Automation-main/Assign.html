@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police Officer Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #8e44ad, #3498db);
+            color: white;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background: #2c3e50;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #2c3e50;
+            color: white;
+            cursor: pointer;
+        }
+
+        .tabs div {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tabs div.active {
+            border-bottom: 2px solid #3498db;
+        }
+
+        .form-section {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        form select, form input, form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        form button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background: #1a252f;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Police Officer Management System</h1>
+    </header>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-target="assign">Assign Officer</div>
+            <div class="tab" data-target="transfer">Transfer Officer</div>
+        </div>
+        <div class="form-section active" id="assign">
+            <h2>Assign Officer</h2>
+            <form id="assignForm">
+                <label for="officerName">Officer Name:</label>
+                <input type="text" id="assignOfficerName" placeholder="Enter officer's name" required>
+                
+                <label for="state">State:</label>
+                <select id="assignState" required>
+                    <option value="">Select State</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+    <option value="Assam">Assam</option>
+    <option value="Bihar">Bihar</option>
+    <option value="Chhattisgarh">Chhattisgarh</option>
+    <option value="Goa">Goa</option>
+    <option value="Gujarat">Gujarat</option>
+    <option value="Haryana">Haryana</option>
+    <option value="Himachal Pradesh">Himachal Pradesh</option>
+    <option value="Jharkhand">Jharkhand</option>
+    <option value="Karnataka">Karnataka</option>
+    <option value="Kerala">Kerala</option>
+    <option value="Madhya Pradesh">Madhya Pradesh</option>
+    <option value="Maharashtra">Maharashtra</option>
+    <option value="Manipur">Manipur</option>
+    <option value="Meghalaya">Meghalaya</option>
+    <option value="Mizoram">Mizoram</option>
+    <option value="Nagaland">Nagaland</option>
+    <option value="Odisha">Odisha</option>
+    <option value="Punjab">Punjab</option>
+    <option value="Rajasthan">Rajasthan</option>
+    <option value="Sikkim">Sikkim</option>
+    <option value="Tamil Nadu">Tamil Nadu</option>
+    <option value="Telangana">Telangana</option>
+    <option value="Tripura">Tripura</option>
+    <option value="Uttar Pradesh">Uttar Pradesh</option>
+    <option value="Uttarakhand">Uttarakhand</option>
+    <option value="West Bengal">West Bengal</option>
+    <!-- Union Territories -->
+    <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+    <option value="Chandigarh">Chandigarh</option>
+    <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+    <option value="Delhi">Delhi</option>
+    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+    <option value="Lakshadweep">Lakshadweep</option>
+    <option value="Ladakh">Ladakh</option>
+    <option value="Puducherry">Puducherry</option>
+                </select>
+
+                <label for="station">Police Station:</label>
+                <input type="text" id="assignStation" placeholder="Enter station name" required>
+
+                <button type="button" onclick="assignOfficer()">Assign Officer</button>
+            </form>
+            <div class="result" id="assignResult"></div>
+        </div>
+        <div class="form-section" id="transfer">
+            <h2>Transfer Officer</h2>
+            <form id="transferForm">
+                <label for="officerName">Officer Name:</label>
+                <input type="text" id="transferOfficerName" placeholder="Enter officer's name" required>
+
+                <label for="fromStation">From Station:</label>
+                <input type="text" id="fromStation" placeholder="Enter current station" required>
+
+                <label for="toStation">To Station:</label>
+                <input type="text" id="toStation" placeholder="Enter new station" required>
+
+                <button type="button" onclick="transferOfficer()">Transfer Officer</button>
+            </form>
+            <div class="result" id="transferResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching
+        document.querySelectorAll(".tab").forEach(tab => {
+            tab.addEventListener("click", () => {
+                document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+                document.querySelectorAll(".form-section").forEach(fs => fs.classList.remove("active"));
+
+                tab.classList.add("active");
+                document.getElementById(tab.dataset.target).classList.add("active");
+            });
+        });
+
+        // Assign Officer
+        function assignOfficer() {
+            const name = document.getElementById("assignOfficerName").value;
+            const state = document.getElementById("assignState").value;
+            const station = document.getElementById("assignStation").value;
+
+            if (name && state && station) {
+                document.getElementById("assignResult").innerText = `Officer ${name} has been assigned to ${station}, ${state}.`;
+            } else {
+                alert("Please fill out all fields in the form.");
+            }
+        }
+
+        // Transfer Officer
+        function transferOfficer() {
+            const name = document.getElementById("transferOfficerName").value;
+            const fromStation = document.getElementById("fromStation").value;
+            const toStation = document.getElementById("toStation").value;
+
+            if (name && fromStation && toStation) {
+                document.getElementById("transferResult").innerText = `Officer ${name} has been transferred from ${fromStation} to ${toStation}.`;
+            } else {
+                alert("Please fill out all fields in the form.");
+            }
+        }
+    </script>
+</body>
+</html>

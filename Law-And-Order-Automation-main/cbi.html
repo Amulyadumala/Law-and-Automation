@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBI Case Management System</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f9;
+      color: #333;
+      background-image: url(https://media.assettype.com/bloombergquint%2Fimport%2F305723_image_main.jpg?w=732);
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-size: cover;}
+
+    header {
+      background-color: #2e3b4e;
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 40px auto;
+  background-color: rgba(219, 217, 217, 0.7); /* White with 70% opacity */
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+    h2 {
+      color: #2e3b4e;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #555;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      font-size: 16px;
+      margin-top: 8px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #4CAF50;
+    }
+
+    button {
+      padding: 15px 20px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      font-size: 18px;
+      color: #333;
+    }
+
+    /* Case List Table */
+    .case-list {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      margin-top: 30px;
+    }
+
+    .case-list th, .case-list td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .case-list th {
+      background-color: #2e3b4e;
+      color: white;
+    }
+
+    .case-list td {
+      font-size: 16px;
+    }
+
+    .case-list tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .case-list button {
+      padding: 8px 16px;
+      background-color: #FFC107;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .case-list button:hover {
+      background-color: #ff9800;
+    }
+
+    .footer {
+      text-align: center;
+      background-color: #2e3b4e;
+      color: white;
+      padding: 20px;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+
+    /* Mobile Responsiveness */
+    @media screen and (max-width: 768px) {
+      header {
+        padding: 20px;
+      }
+
+      .container {
+        padding: 20px;
+      }
+
+      button {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>CBI Case Management System</h1>
+  </header>
+
+  <div class="container">
+    <h2>Register a New Case</h2>
+    <form id="caseForm">
+      <div class="form-group">
+        <label for="caseNumber">Case Number</label>
+        <input type="text" id="caseNumber" name="caseNumber" required placeholder="Enter Case Number">
+      </div>
+
+      <div class="form-group">
+        <label for="caseTitle">Case Title</label>
+        <input type="text" id="caseTitle" name="caseTitle" required placeholder="Enter Case Title">
+      </div>
+
+      <div class="form-group">
+        <label for="assignedOfficer">Assigned Officer</label>
+        <input type="text" id="assignedOfficer" name="assignedOfficer" required placeholder="Enter Officer's Name">
+      </div>
+
+      <div class="form-group">
+        <label for="caseType">Case Type</label>
+        <select id="caseType" name="caseType" required>
+          <option value="Murder">Murder</option>
+          <option value="Corruption">Corruption</option>
+          <option value="Fraud">Fraud</option>
+          <option value="Terrorism">Terrorism</option>
+          <option value="Drug Trafficking">Drug Trafficking</option>
+          <option value="Kidnapping">Kidnapping</option>
+          <option value="Cybercrime">Cybercrime</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="priority">Priority Level</label>
+        <select id="priority" name="priority" required>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="status">Case Status</label>
+        <select id="status" name="status" required>
+          <option value="Active">Active</option>
+          <option value="Closed">Closed</option>
+          <option value="Solved">Solved</option>
+          <option value="Unsolved">Unsolved</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="caseDate">Date of Case</label>
+        <input type="date" id="caseDate" name="caseDate" required>
+      </div>
+
+      <div class="form-group">
+        <label for="caseNotes">Case Notes</label>
+        <textarea id="caseNotes" name="caseNotes" placeholder="Enter any notes about the case"></textarea>
+      </div>
+
+      <button type="submit">Register Case</button>
+    </form>
+
+    <div class="loading" id="loading">Submitting...</div>
+
+    <h2>Active Cases</h2>
+    <table class="case-list" id="caseList">
+      <thead>
+        <tr>
+          <th>Case Number</th>
+          <th>Case Title</th>
+          <th>Assigned Officer</th>
+          <th>Case Type</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dynamic case list here -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    CBI | Case Management System |
+  </div>
+
+  <script>
+    // Function to add and update case list
+    document.getElementById('caseForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      // Show loading animation
+      document.getElementById('loading').style.display = 'block';
+
+      // Get form values
+      const caseNumber = document.getElementById('caseNumber').value;
+      const caseTitle = document.getElementById('caseTitle').value;
+      const assignedOfficer = document.getElementById('assignedOfficer').value;
+      const caseType = document.getElementById('caseType').value;
+      const priority = document.getElementById('priority').value;
+      const status = document.getElementById('status').value;
+      const caseDate = document.getElementById('caseDate').value;
+      const caseNotes = document.getElementById('caseNotes').value;
+
+      // Store case data
+      const caseData = {
+        caseNumber, caseTitle, assignedOfficer, caseType, priority, status, caseDate, caseNotes
+      };
+
+      // Save to local storage
+      let caseList = JSON.parse(localStorage.getItem('caseList')) || [];
+      caseList.push(caseData);
+      localStorage.setItem('caseList', JSON.stringify(caseList));
+
+      // Reset form and hide loading
+      document.getElementById('caseForm').reset();
+      document.getElementById('loading').style.display = 'none';
+
+      // Update case list table
+      updateCaseList();
+    });
+
+    // Function to update the case list table
+    function updateCaseList() {
+      const caseList = JSON.parse(localStorage.getItem('caseList')) || [];
+      const tableBody = document.getElementById('caseList').querySelector('tbody');
+      tableBody.innerHTML = '';
+
+      caseList.forEach((caseData, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${caseData.caseNumber}</td>
+          <td>${caseData.caseTitle}</td>
+          <td>${caseData.assignedOfficer}</td>
+          <td>${caseData.caseType}</td>
+          <td>${caseData.priority}</td>
+          <td>${caseData.status}</td>
+          <td>
+            <button onclick="solveCase(${index})">Solve</button>
+            <button onclick="closeCase(${index})">Close</button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Mark the case as solved
+    function solveCase(index) {
+      const caseList = JSON.parse(localStorage.getItem('caseList')) || [];
+      caseList[index].status = 'Solved';
+      localStorage.setItem('caseList', JSON.stringify(caseList));
+      updateCaseList();
+    }
+
+    // Close the case
+    function closeCase(index) {
+      const caseList = JSON.parse(localStorage.getItem('caseList')) || [];
+      caseList[index].status = 'Closed';
+      localStorage.setItem('caseList', JSON.stringify(caseList));
+      updateCaseList();
+    }
+
+    // Load the case list when page loads
+    window.onload = updateCaseList;
+  </script>
+
+</body>
+</html>

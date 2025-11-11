@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Women's Protection Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #d8a5a5;
+      color: #333;
+      background-image: url(https://res.cloudinary.com/people-matters/image/upload/q_auto,f_auto/v1585931855/1585931853.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .container {
+      text-align: center;
+      background-color: #ffb5b5;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 500px;
+    }
+
+    h1 {
+      color: #d91e36;
+      margin-bottom: 20px;
+    }
+
+    .message {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .emergency-btn {
+      background-color: #d91e36;
+      color: white;
+      font-size: 18px;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .emergency-btn:hover {
+      background-color: #b8182e;
+    }
+
+    .information {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 15px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+    }
+
+    .important-info {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .important-info a {
+      color: #d91e36;
+      text-decoration: none;
+    }
+
+    .important-info a:hover {
+      text-decoration: underline;
+    }
+
+    .invisible {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Women's Protection</h1>
+    <div class="message">
+      <p>If you're in danger, press the panic button below.</p>
+    </div>
+
+    <button class="emergency-btn" id="panic-btn">PANIC</button>
+    <button class="emergency-btn" id="start-voice">Start Voice Activation</button>
+
+    <div class="information">
+      <p>Stay Safe:</p>
+      <ul>
+        <li>Always have a charged phone.</li>
+        <li>Share your location with trusted contacts.</li>
+        <li>Keep emergency numbers saved.</li>
+      </ul>
+    </div>
+
+    <div class="important-info">
+      <p><strong>Important Contacts:</strong></p>
+      <p>
+        Emergency Number: <a href="tel:911">911</a><br>
+        Domestic Violence Helpline: <a href="tel:1-800-799-7233">1-800-799-7233</a>
+      </p>
+    </div>
+
+    <div id="contacts">
+      <h3>Add Emergency Contacts</h3>
+      <input type="text" id="contact-name" placeholder="Contact Name">
+      <input type="text" id="contact-number" placeholder="Phone Number">
+      <button onclick="saveContact()">Save Contact</button>
+    </div>
+
+    <div id="report" class="invisible">
+      <h3>Report an Incident (Anonymous)</h3>
+      <textarea id="incident-details" placeholder="Describe the incident"></textarea><br>
+      <button onclick="sendAnonymousReport()">Report</button>
+    </div>
+
+    <div id="video-stream" class="invisible">
+      <h3>Live Video Streaming (Not Implemented in Frontend)</h3>
+      <button onclick="startVideoCall()">Start Video</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Panic Button Action
+    document.getElementById('panic-btn').addEventListener('click', function() {
+      alert('Emergency alert sent!');
+      sendLocationAlert();
+      // Hide the page or change button to show panic mode
+      this.style.backgroundColor = '#b8182e';
+      this.textContent = 'ALERT SENT';
+      startPanicMode();
+    });
+
+    // Geolocation sharing function
+    function sendLocationAlert() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          alert(`Your location: Latitude ${lat}, Longitude ${lon}`);
+          console.log(`Location: Latitude ${lat}, Longitude ${lon}`);
+        });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+
+    // Voice Activation
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+    recognition.onstart = function() {
+      console.log('Voice recognition started');
+    };
+    recognition.onspeechend = function() {
+      recognition.stop();
+    };
+    recognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript.toLowerCase();
+      if (transcript === "help") {
+        sendLocationAlert();
+      }
+    };
+
+    document.getElementById('start-voice').addEventListener('click', function() {
+      recognition.start();
+    });
+
+    // Silent Alarm (Hides panic details)
+    function startPanicMode() {
+      setTimeout(function() {
+        document.body.classList.add('invisible');
+      }, 2000);  // Hide content 2 seconds after panic alert
+    }
+
+    // Emergency Contact List
+    function saveContact() {
+      const name = document.getElementById('contact-name').value;
+      const number = document.getElementById('contact-number').value;
+      localStorage.setItem('emergency-contact', JSON.stringify({ name, number }));
+      alert('Emergency contact saved!');
+    }
+
+    // Sending SOS Message (Discreet)
+    function sendSOSMessage() {
+      const message = "I'm in danger, please help! SOS #urgent";
+      alert(`SOS message sent: "${message}"`);
+      // Send via SMS or email
+    }
+
+    // Anonymous Incident Reporting
+    function sendAnonymousReport() {
+      const details = document.getElementById('incident-details').value;
+      alert('Incident reported anonymously.');
+      // Send report to a relevant organization or authority
+    }
+
+    // Starting Video Call for Streaming (Placeholder)
+    function startVideoCall() {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(function(stream) {
+          alert('Starting live video stream...');
+          console.log('Video Stream started');
+        })
+        .catch(function(err) {
+          alert('Unable to access camera and microphone.');
+        });
+    }
+  </script>
+</body>
+</html>

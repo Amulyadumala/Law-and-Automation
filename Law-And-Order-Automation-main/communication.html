@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Police Officer Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url(https://cdn.aib.edu.au/public-website/uploads/p/2014/06/form-submission-7472-6reasonseffectivecommunicationfocusbusiness-2-desktop-768x432-1608079236-85.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .container {
+      width: 400px;
+      background-color: hsl(0, 23%, 86%);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #login-form {
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    #chatbox {
+      display: none;
+      flex-direction: column;
+    }
+
+    #chatlog {
+      height: 300px;
+      overflow-y: scroll;
+      border-bottom: 2px solid #ddd;
+      padding: 10px;
+    }
+
+    .message {
+      margin: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: #f1f1f1;
+      max-width: 80%;
+    }
+
+    .user-message {
+      background-color: #4CAF50;
+      color: white;
+      align-self: flex-end;
+    }
+
+    .bot-message {
+      background-color: #2196F3;
+      color: white;
+      align-self: flex-start;
+    }
+
+    #user-input {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-top: 2px solid #ddd;
+      border-radius: 0 0 10px 10px;
+      font-size: 16px;
+    }
+
+    #send-button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    #send-button:hover {
+      background-color: #45a049;
+    }
+
+    #login-form input {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    #login-form button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #login-form button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Login Form -->
+    <div id="login-form">
+      <h2>Login to Chatbot</h2>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+    </div>
+
+    <!-- Chatbot Interface -->
+    <div id="chatbox">
+      <div id="chatlog"></div>
+      <input type="text" id="user-input" placeholder="Type your message..." />
+      <button id="send-button">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Predefined responses for the chatbot
+    const botResponses = {
+      "hello": "Hello Officer! How can I assist you today?",
+      "case": "You can report a new case by filling out the case registration form.",
+      "status": "Please provide the case number to check its status.",
+      "crime": "For information on crime rates, you can access the crime statistics database.",
+      "help": "I'm here to assist you with case details, reports, and general queries.",
+      "report": "To submit a report, please fill out the report form below.",
+      "default": "Sorry, I didn't understand that. Could you please clarify?"
+    };
+
+    // Function to handle the login process
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      if (username === "officer1" && password === "password123") {
+        alert("Login successful");
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("chatbox").style.display = "flex";  // Show chatbot
+      } else {
+        alert("Invalid credentials");
+      }
+    }
+
+    // Function to handle the chatbot conversation
+    function chat() {
+      const userInput = document.getElementById('user-input').value.toLowerCase();
+      const chatlog = document.getElementById('chatlog');
+
+      if (userInput.trim() === "") return;
+
+      // Display user's message
+      const userMessage = document.createElement('div');
+      userMessage.classList.add('message', 'user-message');
+      userMessage.textContent = userInput;
+      chatlog.appendChild(userMessage);
+
+      // Get bot's response
+      const botResponse = botResponses[userInput] || botResponses['default'];
+
+      // Display bot's response
+      const botMessage = document.createElement('div');
+      botMessage.classList.add('message', 'bot-message');
+      botMessage.textContent = botResponse;
+      chatlog.appendChild(botMessage);
+
+      // Scroll to the bottom
+      chatlog.scrollTop = chatlog.scrollHeight;
+
+      // Clear input field
+      document.getElementById('user-input').value = "";
+    }
+
+    // Event Listeners
+    document.getElementById('send-button').addEventListener('click', chat);
+    document.getElementById('user-input').addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        chat();
+      }
+    });
+  </script>
+
+</body>
+</html>

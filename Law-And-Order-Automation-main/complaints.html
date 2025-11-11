@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police Complaint Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0e2143;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #73c290;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-family:Georgia, 'Times New Roman', Times, serif;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, textarea, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-upload input {
+            flex: 1;
+        }
+
+        .progress-bar {
+            height: 5px;
+            background-color: #007bff;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Complaint Form</h1>
+        <form id="complaintForm">
+            <div id="step1" class="form-step">
+                <label for="language">Preferred Language</label>
+                <select id="language" name="language">
+                    <option value="en">English</option>
+                    <option value="es">Telugu</option>
+                    <option value="fr">Hindi</option>
+                </select>
+
+                <label for="name">Your Full Name</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="10-digit number" required>
+
+                <label for="address">Your Address</label>
+                <textarea id="address" name="address" rows="3" required></textarea>
+            </div>
+
+            <div id="step2" class="form-step" style="display: none;">
+                <label for="category">Complaint Category</label>
+                <select id="category" name="category" required>
+                    <option value="theft">Theft</option>
+                    <option value="fraud">Fraud</option>
+                    <option value="harassment">Harassment</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="incidentDate">Date of Incident</label>
+                <input type="date" id="incidentDate" name="incidentDate" required>
+
+                <label for="incidentTime">Time of Incident</label>
+                <input type="time" id="incidentTime" name="incidentTime" required>
+
+                <label for="location">Incident Location</label>
+                <input type="text" id="location" name="location" placeholder="Enter location or use GPS">
+                <button type="button" onclick="useGPS()">Use GPS</button>
+
+                <label for="complaint">Complaint Description</label>
+                <textarea id="complaint" name="complaint" rows="5" placeholder="Describe the incident" required></textarea>
+            </div>
+
+            <div id="step3" class="form-step" style="display: none;">
+                <label for="proofs">Upload Proofs</label>
+                <div class="file-upload">
+                    <input type="file" id="proofs" name="proofs" accept="image/*,.pdf,.mp4,.mp3" multiple>
+                </div>
+
+                <label for="witness">Witness Information (Optional)</label>
+                <textarea id="witness" name="witness" rows="3" placeholder="Provide details of witnesses if any"></textarea>
+
+                <label for="captcha">Enter CAPTCHA</label>
+                <input type="text" id="captcha" name="captcha" placeholder="Enter CAPTCHA here" required>
+
+                <div class="captcha-placeholder">[CAPTCHA]</div>
+            </div>
+
+            <div class="progress-bar" id="progressBar"></div>
+
+            <button type="button" id="prevBtn" onclick="changeStep(-1)" style="display: none;">Previous</button>
+            <button type="button" id="nextBtn" onclick="changeStep(1)">Next</button>
+            <button type="submit" id="submitBtn" style="display: none;">Submit Complaint</button>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 0;
+        const steps = document.querySelectorAll(".form-step");
+        const progressBar = document.getElementById("progressBar");
+
+        function updateStepDisplay() {
+            steps.forEach((step, index) => {
+                step.style.display = index === currentStep ? "block" : "none";
+            });
+
+            document.getElementById("prevBtn").style.display = currentStep > 0 ? "inline-block" : "none";
+            document.getElementById("nextBtn").style.display = currentStep < steps.length - 1 ? "inline-block" : "none";
+            document.getElementById("submitBtn").style.display = currentStep === steps.length - 1 ? "inline-block" : "none";
+
+            progressBar.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
+        }
+
+        function changeStep(step) {
+            currentStep += step;
+            updateStepDisplay();
+        }
+
+        function useGPS() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    document.getElementById("location").value = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        document.getElementById("complaintForm").addEventListener("submit", event => {
+            event.preventDefault();
+
+            alert("Your complaint has been submitted successfully.");
+            document.getElementById("complaintForm").reset();
+            currentStep = 0;
+            updateStepDisplay();
+        });
+
+        updateStepDisplay();
+    </script>
+</body>
+</html>

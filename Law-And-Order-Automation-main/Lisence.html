@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced License Application</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #1e1e2f;
+      color: #f5f5f5;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background: #292942;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    h1 {
+      text-align: center;
+      color: #ffcc00;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    form label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+      color: #ffcc00;
+    }
+    form select, form input, form textarea, form button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background: #3b3b57;
+      color: #f5f5f5;
+    }
+    form input:focus, form textarea:focus, form select:focus {
+      border-color: #ffcc00;
+      outline: none;
+    }
+    form button {
+      background-color: #ffcc00;
+      color: #292942;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    form button:hover {
+      background-color: #d4a800;
+    }
+    .license-list {
+      margin-top: 20px;
+    }
+    .license-item {
+      background: #35355e;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      color: #f5f5f5;
+    }
+    .license-item h3 {
+      margin: 0 0 5px;
+      color: #ffcc00;
+    }
+    .license-item p {
+      margin: 5px 0;
+      color: #d1d1e0;
+    }
+    #stats {
+      margin-top: 20px;
+      background: #35355e;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    #progressBar {
+      background: #444;
+      border-radius: 5px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+    #progress {
+      height: 10px;
+      background: #ffcc00;
+      width: 0;
+    }
+    #confirmationModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #292942;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      color: #f5f5f5;
+    }
+    .modal-content button {
+      background: #ffcc00;
+      color: #292942;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .modal-content button:hover {
+      background: #d4a800;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Enhanced License Application</h1>
+
+    <form id="licenseForm">
+      <label for="applicantName">Applicant Name:</label>
+      <input type="text" id="applicantName" placeholder="Enter your name" required>
+
+      <label for="licenseType">Type of License:</label>
+      <select id="licenseType" required>
+        <option value="" disabled selected>Select a license</option>
+        <option value="2-wheeler">2-Wheeler License</option>
+        <option value="3-wheeler">3-Wheeler License</option>
+        <option value="music">Music License</option>
+        <option value="commercial">Commercial License</option>
+        <option value="special">Special Event License</option>
+      </select>
+
+      <label for="licensePurpose">Purpose of License:</label>
+      <textarea id="licensePurpose" placeholder="Describe the purpose of this license" rows="3" required></textarea>
+
+      <label for="applicationDate">Application Date:</label>
+      <input type="date" id="applicationDate" required>
+
+      <label for="documentUpload">Upload Documents:</label>
+      <input type="file" id="documentUpload" required>
+
+      <div id="progressBar">
+        <div id="progress"></div>
+      </div>
+
+      <button type="submit">Apply for License</button>
+    </form>
+
+    <div id="stats">
+      <p>Total Applications: <span id="totalApplications">0</span></p>
+      <p>2-Wheeler Licenses: <span id="twoWheelerCount">0</span></p>
+      <p>Music Licenses: <span id="musicCount">0</span></p>
+    </div>
+
+    <input type="text" id="searchBar" placeholder="Search applications..." onkeyup="filterApplications()">
+
+    <div class="license-list" id="licenseList">
+      <h2>Submitted Applications:</h2>
+      <!-- License applications will appear here -->
+    </div>
+  </div>
+
+  <div id="confirmationModal">
+    <div class="modal-content">
+      <h3>Application Submitted!</h3>
+      <p>Your application has been successfully submitted.</p>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const licenseForm = document.getElementById('licenseForm');
+    const licenseList = document.getElementById('licenseList');
+    const totalApplicationsEl = document.getElementById('totalApplications');
+    const twoWheelerCountEl = document.getElementById('twoWheelerCount');
+    const musicCountEl = document.getElementById('musicCount');
+
+    let totalApplications = 0;
+    let twoWheelerCount = 0;
+    let musicCount = 0;
+    const savedApplications = JSON.parse(localStorage.getItem('applications')) || [];
+
+    savedApplications.forEach(app => renderApplication(app));
+
+    licenseForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const applicantName = document.getElementById('applicantName').value.trim();
+      const licenseType = document.getElementById('licenseType').value;
+      const licensePurpose = document.getElementById('licensePurpose').value.trim();
+      const applicationDate = document.getElementById('applicationDate').value;
+
+      if (!applicantName || !licenseType || !licensePurpose || !applicationDate) {
+        alert('Please fill out all fields!');
+        return;
+      }
+
+      const applicationId = `APP-${Date.now()}`;
+      const appData = { applicationId, applicantName, licenseType, licensePurpose, applicationDate };
+      renderApplication(appData);
+      saveApplication(appData);
+
+      updateStats(licenseType);
+      showModal();
+
+      licenseForm.reset();
+      updateProgress();
+    });
+
+    function renderApplication(app) {
+      const licenseDiv = document.createElement('div');
+      licenseDiv.classList.add('license-item');
+      licenseDiv.innerHTML = `
+        <h3>${app.applicantName} (ID: ${app.applicationId})</h3>
+        <p><strong>License Type:</strong> ${app.licenseType}</p>
+        <p><strong>Purpose:</strong> ${app.licensePurpose}</p>
+        <p><strong>Date:</strong> ${app.applicationDate}</p>
+      `;
+            licenseList.appendChild(licenseDiv);
+    }
+
+    function saveApplication(app) {
+      savedApplications.push(app);
+      localStorage.setItem('applications', JSON.stringify(savedApplications));
+    }
+
+    function updateStats(licenseType) {
+      totalApplications++;
+      totalApplicationsEl.textContent = totalApplications;
+
+      if (licenseType === '2-wheeler') twoWheelerCount++;
+      if (licenseType === 'music') musicCount++;
+
+      twoWheelerCountEl.textContent = twoWheelerCount;
+      musicCountEl.textContent = musicCount;
+    }
+
+    function updateProgress() {
+      const filledFields = Array.from(document.querySelectorAll('#licenseForm input, #licenseForm select, #licenseForm textarea'))
+        .filter(field => field.value.trim() !== '').length;
+      const totalFields = 5; // Update based on total fields
+      const progress = Math.round((filledFields / totalFields) * 100);
+      document.getElementById('progress').style.width = `${progress}%`;
+    }
+
+    document.querySelectorAll('#licenseForm input, #licenseForm select, #licenseForm textarea').forEach(input => {
+      input.addEventListener('input', updateProgress);
+    });
+
+    function showModal() {
+      document.getElementById('confirmationModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('confirmationModal').style.display = 'none';
+    }
+
+    function filterApplications() {
+      const query = document.getElementById('searchBar').value.toLowerCase();
+      const applications = document.querySelectorAll('.license-item');
+      applications.forEach(app => {
+        const content = app.textContent.toLowerCase();
+        app.style.display = content.includes(query) ? '' : 'none';
+      });
+    }
+  </script>
